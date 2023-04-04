@@ -1,0 +1,9 @@
+.card__like-btn {
+  width: 22px;
+  height: 28px;
+  background: url(../../../images/places__likeButton.svg) no-repeat center / contain;
+}
+
+.card__like-btn:hover {
+  opacity: .5;
+}

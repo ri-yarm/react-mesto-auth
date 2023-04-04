@@ -1,0 +1,25 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  max-width: calc(100% - 20px * 2);
+  margin: 0 auto 36px;
+  box-sizing: border-box;
+}
+
+@media screen and (min-width: 800px) {
+  .profile {
+    max-width: 50vw;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .profile {
+    max-width: calc(100% - 200px * 2);
+    display: grid;
+    grid-template-columns: min-content 1fr 150px;
+    align-items: center;
+    justify-items: start;
+    margin: 0 auto 50px;
+  }
+}

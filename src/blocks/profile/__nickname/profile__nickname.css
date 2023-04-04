@@ -1,0 +1,15 @@
+.profile__nickname {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto 8px;
+  padding: 0;
+}
+
+@media screen and (min-width: 1280px) {
+  .profile__nickname {
+    gap: 18px;
+  }
+}

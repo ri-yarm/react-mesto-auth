@@ -1,0 +1,43 @@
+.profile__link {
+  position: relative;
+  margin: 0 auto 26px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.profile__link:before {
+  content: '';
+  z-index: 2;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: opacity 0.4s ease;
+  background: url("../../../images/profile__editAvator.svg") no-repeat center center;
+}
+.profile__link:after {
+  content: '';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: opacity 0.4s linear;
+  background: rgba(0, 0, 0, .8);
+}
+
+.profile__link:hover:before,
+.profile__link:hover:after {
+  opacity: 1;
+}
+
+@media screen and (min-width: 1280px) {
+  .profile__link {
+    margin: 0;
+    margin-right: 30px;
+  }
+}

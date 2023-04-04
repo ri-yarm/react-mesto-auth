@@ -1,0 +1,16 @@
+:root {
+  height: 100%;
+}
+
+/* для нормального отображения в реакте */
+#root {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  background-color: #000;
+  min-height: 100vh;
+  
+}
+
+.App {
+  min-height: 100vh;
+}

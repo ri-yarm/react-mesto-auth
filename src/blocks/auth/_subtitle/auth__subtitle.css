@@ -1,0 +1,11 @@
+.auth__subtitle {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  margin: 20px 0 0;
+  text-align: center;
+  padding: 0;
+  color: #ffffff;
+}

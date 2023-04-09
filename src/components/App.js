@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import Header from "./Header";
 import Main from "./Main";
@@ -12,7 +12,9 @@ import EditAvatarPopup from "./Popups/EditAvatarPopup";
 import AddPlacePopup from "./Popups/AddPlacePopup";
 import DeleteCardPopup from "./Popups/DeleteCardPopup";
 import ImagePopup from "./Popups/ImagePopup";
+import InfoTooltip from "./Popups/InfoTooltip";
 
+import ProtectedRoute from "./hoc/ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { CardContext } from "../contexts/CardContext";
 
@@ -27,12 +29,17 @@ function App() {
     React.useState(false);
   const [isDeleteCardPopupOpened, setDeleteCardPopupOpened] =
     React.useState(false);
+
+  const [isInfoTooltip, setInfoTooltip] = React.useState(false);
+
   const [isLoading, setIsLoading] = React.useState(false); // лоудер
   const [selectedCard, setSelectedCard] = React.useState({}); // выбранная карточка
   const [deletedCard, setDeletedCard] = React.useState({}); //стейт удаляемой карточки
   const [currentUser, setCurrentUser] = React.useState({}); // стейт юзера
   const [cards, setCards] = React.useState([]); //стейт с массивом карточек
-  const [LoggedIn, setLoggedIn] = React.useState(false); //стейт авторизации
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const [LoggedIn, setLoggedIn] = React.useState(true); //стейт авторизации
 
   // Есть ли хоть один открытый попап
   const isOpen =
@@ -58,6 +65,7 @@ function App() {
     setEditAvatarPopupOpened(false);
     setSelectedCard({});
     setDeleteCardPopupOpened(false);
+    setInfoTooltip(false)
   };
 
   /** обращение к апи. поиск лайка среди массива лайков карточки и его последущая смена на лайк/дизлайк */
@@ -173,10 +181,10 @@ function App() {
       <CardContext.Provider value={cards}>
         <div className="App">
           <div className="page__container">
-            <Header />
+            <Header currentPath={currentPath} />
 
             <Routes>
-              <Route
+              {/* <Route
                 path="/"
                 element={
                   LoggedIn ? (
@@ -185,11 +193,26 @@ function App() {
                     <Navigate to="/sign-in" replace />
                   )
                 }
-              />
-              <Route
+              /> */}
+              {/* <Route
                 path="/"
                 element={
                   <Main
+                    onEditProfile={openEditProfilePopup}
+                    onAddPlace={openAddPlacePopup}
+                    onEditAvatar={openEditAvatarPopup}
+                    onCardClick={setSelectedCard}
+                    onCardLike={handleCardClick}
+                    onCardDelete={openDeleteCardPopup}
+                  />
+                }
+              /> */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute
+                    element={Main}
+                    loggedIn={LoggedIn}
                     onEditProfile={openEditProfilePopup}
                     onAddPlace={openAddPlacePopup}
                     onEditAvatar={openEditAvatarPopup}
@@ -235,6 +258,8 @@ function App() {
               onDeleteCard={handleCardDelete}
               isLoading={isLoading}
             />
+
+            <InfoTooltip isOpen={isInfoTooltip} onClose={closeAllPopups} />
           </div>
         </div>
       </CardContext.Provider>

@@ -1,20 +1,22 @@
-.auth {
+.popup__info {
   box-sizing: border-box;
-  /* display: flex;
-  flex-flow: column wrap; */
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
   justify-content: center;
+  background-color: #fff;
   width: 282px;
   margin: 0 auto;
-  padding: 0 13px 0 13px;
+  padding: 50px 22px 22px 22px;
   border-radius: 8px;
   position: relative;
   /* min-height: 322px; */
 }
 
 @media screen and (min-width: 1280px) {
-  .auth {
+  .popup__info {
     width: 430px;
-    padding: 0px 36px 36px;
+    padding: 34px 36px 36px;
     max-height: 370px;
   }
 }

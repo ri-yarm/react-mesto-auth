@@ -18,7 +18,7 @@ import ProtectedRoute from "./hoc/ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { CardContext } from "../contexts/CardContext";
 
-import api from "../utils/Api";
+import * as api from "../utils/Api";
 
 function App() {
   // хуки состояния попапов(по умолчанию не видно)

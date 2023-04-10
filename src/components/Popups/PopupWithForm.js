@@ -1,5 +1,3 @@
-import { useEffect, useRef } from "react";
-
 const PopupWithForm = ({
   name,
   title,
@@ -12,8 +10,9 @@ const PopupWithForm = ({
 }) => {
 
   const overlayClickHandler = (evt) => { // закрытие попапа на оверлей
-    evt.stopPropagation();
-    onClose()
+    if (evt.target === evt.currentTarget) {
+      onClose();
+    }
   }
 
   return (

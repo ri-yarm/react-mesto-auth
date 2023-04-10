@@ -65,7 +65,7 @@ function App() {
     setEditAvatarPopupOpened(false);
     setSelectedCard({});
     setDeleteCardPopupOpened(false);
-    setInfoTooltip(false)
+    // setInfoTooltip(false)
   };
 
   /** обращение к апи. поиск лайка среди массива лайков карточки и его последущая смена на лайк/дизлайк */
@@ -259,7 +259,7 @@ function App() {
               isLoading={isLoading}
             />
 
-            <InfoTooltip isOpen={isInfoTooltip} onClose={closeAllPopups} />
+            {/* <InfoTooltip isOpen={isInfoTooltip} onClose={closeAllPopups} /> */}
           </div>
         </div>
       </CardContext.Provider>

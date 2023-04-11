@@ -8,15 +8,18 @@ const PopupWithForm = ({
   children,
   isButtonDisable,
 }) => {
-
-  const overlayClickHandler = (evt) => { // закрытие попапа на оверлей
+  const overlayClickHandler = (evt) => {
+    // закрытие попапа на оверлей
     if (evt.target === evt.currentTarget) {
       onClose();
     }
-  }
+  };
 
   return (
-    <div className={`popup popup_type_${name} popup_opened`} onClick={overlayClickHandler}>
+    <div
+      className={`popup popup_type_${name} popup_opened`}
+      onClick={overlayClickHandler}
+    >
       <div className="popup__container">
         <button
           onClick={onClose}
@@ -31,6 +34,7 @@ const PopupWithForm = ({
           onSubmit={onSubmit}
           noValidate
         >
+        
           {children}
 
           <button

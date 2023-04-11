@@ -32,7 +32,7 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
             name="name"
             type="text"
             className="form__input form__input_type_name"
-            placeholder="Название"
+            placeholder="Название места"
             required
             minLength="2"
             maxLength="30"

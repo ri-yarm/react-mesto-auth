@@ -21,7 +21,7 @@ import { CardContext } from "../contexts/CardContext";
 import * as api from "../utils/Api";
 
 function App() {
-  // хуки состояния попапов(по умолчанию не видно)
+  // стейты состояния попапов(по умолчанию не видно)
   const [isEditProfilePopupOpened, setIsEditProfilePopupOpened] =
     React.useState(false);
   const [isAddPlacePopupOpened, setAddPlacePopupOpened] = React.useState(false);
@@ -36,10 +36,13 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({}); // выбранная карточка
   const [deletedCard, setDeletedCard] = React.useState({}); //стейт удаляемой карточки
   const [currentUser, setCurrentUser] = React.useState({}); // стейт юзера
+
+  const [registredUser, setRegistredUser] = React.useState({});
+
   const [cards, setCards] = React.useState([]); //стейт с массивом карточек
   const location = useLocation();
   const currentPath = location.pathname;
-  const [LoggedIn, setLoggedIn] = React.useState(true); //стейт авторизации
+  const [LoggedIn, setLoggedIn] = React.useState(false); //стейт авторизации
 
   // Есть ли хоть один открытый попап
   const isOpen =
@@ -143,6 +146,12 @@ function App() {
       .finally(() => setIsLoading(false));
   };
 
+
+  const handleLogin = (res) => {
+    setLoggedIn(true);
+    setRegistredUser(res);
+  };
+
   // для получение данных через api
   useEffect(() => {
     const userPromise = api.getUserInfo();
@@ -163,9 +172,7 @@ function App() {
   useEffect(() => {
     function closeByEscape(evt) {
       //закрытие попапа esc
-      if (evt.key === "Escape") {
-        closeAllPopups();
-      }
+      if (evt.key === "Escape") closeAllPopups()
     }
 
     if (isOpen) {
@@ -181,19 +188,9 @@ function App() {
       <CardContext.Provider value={cards}>
         <div className="App">
           <div className="page__container">
-            <Header currentPath={currentPath} />
+            <Header currentPath={currentPath} registredUser={registredUser} setLoggedIn={setLoggedIn} />
 
             <Routes>
-              {/* <Route
-                path="/"
-                element={
-                  LoggedIn ? (
-                    <Navigate to="/" replace />
-                  ) : (
-                    <Navigate to="/sign-in" replace />
-                  )
-                }
-              /> */}
               {/* <Route
                 path="/"
                 element={
@@ -222,8 +219,21 @@ function App() {
                   />
                 }
               />
-              <Route path="/sign-in" element={<Login />} />
-              <Route path="/sign-up" element={<Register />} />
+              <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
+              <Route
+                path="/sign-up"
+                element={<Register />}
+              />
+              <Route
+                path="/"
+                element={
+                  LoggedIn ? (
+                    <Navigate to="/" replace />
+                  ) : (
+                    <Navigate to="/sign-in" replace />
+                  )
+                }
+              />
             </Routes>
 
             <Footer user={currentUser.name} />

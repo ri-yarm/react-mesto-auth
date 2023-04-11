@@ -12,6 +12,15 @@ export function useFormAndValidation() {
     setValues({...values, [name]: value });
     setErrors({...errors, [name]: e.target.validationMessage});
     setIsValid(e.target.closest('form').checkValidity());
+    
+    
+    /* Удаляет ошибку если пользователь вводит другой пароль */
+    if (name === "password" && errors.confirmPassword) {
+      setErrors({
+        ...errors,
+        confirmPassword: "",
+      });
+    }
   };
 
   // сброс формы
@@ -21,6 +30,6 @@ export function useFormAndValidation() {
     setIsValid(newIsValid);
   }, [setValues, setErrors, setIsValid]);
 
-  return { values, handleChange, errors, isValid, resetForm, setValues, setIsValid};
+  return { values, handleChange, errors, isValid, resetForm, setValues, setIsValid, setErrors};
 }
 

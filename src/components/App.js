@@ -30,18 +30,21 @@ function App() {
   const [isDeleteCardPopupOpened, setDeleteCardPopupOpened] =
     React.useState(false);
 
-  const [isInfoTooltip, setInfoTooltip] = React.useState(false);
+  const [isInfoTooltip, setInfoTooltip] = React.useState({
+    isOpen: true,
+    succes: Boolean
+  }); // попап с уведомленим о успешном(или не очень) входе
+  // const [isInfoTooltipSucces, setInfoTooltipSucces] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(false); // лоудер
   const [selectedCard, setSelectedCard] = React.useState({}); // выбранная карточка
   const [deletedCard, setDeletedCard] = React.useState({}); //стейт удаляемой карточки
   const [currentUser, setCurrentUser] = React.useState({}); // стейт юзера
-
-  const [registredUser, setRegistredUser] = React.useState({});
+  const [registredUser, setRegistredUser] = React.useState({}); //стейт регистрированного юзера
 
   const [cards, setCards] = React.useState([]); //стейт с массивом карточек
   const location = useLocation();
-  const currentPath = location.pathname;
+  const currentPath = location.pathname; // текущий путь в url
   const [LoggedIn, setLoggedIn] = React.useState(false); //стейт авторизации
 
   // Есть ли хоть один открытый попап
@@ -68,7 +71,7 @@ function App() {
     setEditAvatarPopupOpened(false);
     setSelectedCard({});
     setDeleteCardPopupOpened(false);
-    // setInfoTooltip(false)
+    setInfoTooltip(false)
   };
 
   /** обращение к апи. поиск лайка среди массива лайков карточки и его последущая смена на лайк/дизлайк */
@@ -146,7 +149,7 @@ function App() {
       .finally(() => setIsLoading(false));
   };
 
-
+  /** Функция логина. сохраняет данные о регистрированном пользователе */
   const handleLogin = (res) => {
     setLoggedIn(true);
     setRegistredUser(res);
@@ -172,7 +175,7 @@ function App() {
   useEffect(() => {
     function closeByEscape(evt) {
       //закрытие попапа esc
-      if (evt.key === "Escape") closeAllPopups()
+      if (evt.key === "Escape") closeAllPopups();
     }
 
     if (isOpen) {
@@ -188,22 +191,13 @@ function App() {
       <CardContext.Provider value={cards}>
         <div className="App">
           <div className="page__container">
-            <Header currentPath={currentPath} registredUser={registredUser} setLoggedIn={setLoggedIn} />
+            <Header
+              currentPath={currentPath}
+              registredUser={registredUser}
+              setLoggedIn={setLoggedIn}
+            />
 
             <Routes>
-              {/* <Route
-                path="/"
-                element={
-                  <Main
-                    onEditProfile={openEditProfilePopup}
-                    onAddPlace={openAddPlacePopup}
-                    onEditAvatar={openEditAvatarPopup}
-                    onCardClick={setSelectedCard}
-                    onCardLike={handleCardClick}
-                    onCardDelete={openDeleteCardPopup}
-                  />
-                }
-              /> */}
               <Route
                 path="/"
                 element={
@@ -219,11 +213,11 @@ function App() {
                   />
                 }
               />
-              <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
               <Route
-                path="/sign-up"
-                element={<Register />}
+                path="/sign-in"
+                element={<Login handleLogin={handleLogin} />}
               />
+              <Route path="/sign-up" element={<Register setInfoTooltip={setInfoTooltip} />} />
               <Route
                 path="/"
                 element={
@@ -269,7 +263,7 @@ function App() {
               isLoading={isLoading}
             />
 
-            {/* <InfoTooltip isOpen={isInfoTooltip} onClose={closeAllPopups} /> */}
+            <InfoTooltip state={isInfoTooltip} onClose={closeAllPopups} />
           </div>
         </div>
       </CardContext.Provider>

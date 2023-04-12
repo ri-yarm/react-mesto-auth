@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormAndValidation } from "./hooks/useFormAndValidation";
 import * as auth from "../utils/Auth";
 
-const Register = () => {
+const Register = ({setInfoTooltip}) => {
   const navigate = useNavigate();
   const {
     values,
@@ -28,9 +28,13 @@ const Register = () => {
     } else {
       auth
         .register(values.password, values.email)
-        .then((res) => {
+        .then(() => {
+          setInfoTooltip({isOpen: true, succes: true})
           navigate("/sign-in", { replace: true })
-        });
+        })
+        .catch(() => {
+          setInfoTooltip({isOpen: true, succes: false})
+        })
     }
   };
 
@@ -87,7 +91,7 @@ const Register = () => {
         </form>
         <p className="auth__subtitle">
           Уже зарегистрированы?{" "}
-          <Link className="link" to="/login">
+          <Link className="link" to="/sign-in">
             Войти
           </Link>
         </p>

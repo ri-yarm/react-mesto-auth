@@ -1,10 +1,11 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useFormAndValidation } from "./hooks/useFormAndValidation";
 import * as auth from "../utils/Auth";
 
-const Login = ({ handleLogin }) => {
+const Login = ({ handleLogin, setInfoTooltip }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     values,
     handleChange,
@@ -19,13 +20,17 @@ const Login = ({ handleLogin }) => {
   const tokenCheck = () => {
     const jwt = localStorage.getItem("token");
     if (!jwt) {
+      //если токен пустой то не делаем никакого запроса
       return;
     }
     auth.getMyEmail(jwt).then((res) => {
-      handleLogin(res);
-
-      navigate("/", { replace: true });
-    });
+      handleLogin(res.data);
+      const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+      navigate(url);
+    })
+    .catch(() => {
+      setInfoTooltip({isOpen: true, succes: false})
+    })
   };
 
   const handleSubmit = (e) => {
@@ -34,9 +39,13 @@ const Login = ({ handleLogin }) => {
     auth.authorize(values.password, values.email).then((res) => {
       if (res.token) {
         localStorage.setItem("token", res.token);
-        navigate("/", { replace: true });
+        const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+        navigate(url);
       }
-    });
+    })
+    .catch(() => {
+      setInfoTooltip({isOpen: true, succes: false})
+    })
   };
 
   useEffect(() => {

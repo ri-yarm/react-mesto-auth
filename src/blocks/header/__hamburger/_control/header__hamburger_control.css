@@ -1,0 +1,12 @@
+.header__hamburger_control {
+  padding: 0;
+  margin: 0;
+  display: none;
+  margin-right: 30px;
+}
+
+@media screen and (max-width: 600px) {
+  .header__hamburger_control {
+    display: block;
+  }
+}

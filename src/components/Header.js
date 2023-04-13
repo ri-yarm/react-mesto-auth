@@ -1,36 +1,30 @@
+import React, { useState } from "react";
+import HamburgerMenu from "./HamburgerMenu";
 import logo from "../images/header__logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 
 function Header({ currentPath, registredUser, setLoggedIn }) {
+  const [isOpen, setIsOpen] = useState(false); // для гамбургера
   const navigate = useNavigate();
 
-  // console.log(registredUser.data);
+  /** Функция выхода */
   const signOut = () => {
     localStorage.removeItem("token");
     navigate("sign-in", { replace: true });
     setLoggedIn(false);
   };
 
+  /** Функция меняет стейт клика на гамбургер */
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <header className="header">
+    <header className={`header ${isOpen ? "header_hamburger" : ""}`}>
       <Link to="/">
         <img className="header__logo" src={logo} alt=" Места России." />
       </Link>
-      <ul className="header__nav">
-        {currentPath === "/sign-up" && (
-          <li>
-            <Link className="link header__link" to="/sign-in">
-              Войти
-            </Link>
-          </li>
-        )}
-        {currentPath === "/sign-in" && (
-          <li>
-            <Link className="link header__link" to="/sign-up">
-              Регистрация
-            </Link>
-          </li>
-        )}
+      <ul className={`header__nav ${isOpen ? "header__nav_hamburger" : ""}`}>
         {currentPath === "/" && (
           <li>
             <a href="#" className="header__email">
@@ -46,6 +40,27 @@ function Header({ currentPath, registredUser, setLoggedIn }) {
           </li>
         )}
       </ul>
+      {currentPath !== "/" && (
+        <ul className={`header__nav_auth`}>
+          {currentPath === "/sign-up" && (
+            <li>
+              <Link className="link header__link" to="/sign-in">
+                Войти
+              </Link>
+            </li>
+          )}
+          {currentPath === "/sign-in" && (
+            <li>
+              <Link className="link header__link" to="/sign-up">
+                Регистрация
+              </Link>
+            </li>
+          )}
+        </ul>
+      )}
+      {currentPath === "/" && (
+        <HamburgerMenu isOpen={isOpen} handleClick={handleClick} />
+      )}
     </header>
   );
 }

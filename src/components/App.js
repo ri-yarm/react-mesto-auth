@@ -6,6 +6,7 @@ import Main from "./Main";
 import Footer from "./Footer";
 import Login from "./Login";
 import Register from "./Register";
+import NotFound from "./NotFound";
 
 import EditProfilePopup from "./Popups/EditProfilePopup";
 import EditAvatarPopup from "./Popups/EditAvatarPopup";
@@ -20,6 +21,10 @@ import { CardContext } from "../contexts/CardContext";
 
 import * as api from "../utils/Api";
 
+/* 
+  TODO сделать лоудер при загрузки страницы
+*/
+
 function App() {
   // стейты состояния попапов(по умолчанию не видно)
   const [isEditProfilePopupOpened, setIsEditProfilePopupOpened] =
@@ -29,12 +34,10 @@ function App() {
     React.useState(false);
   const [isDeleteCardPopupOpened, setDeleteCardPopupOpened] =
     React.useState(false);
-
   const [isInfoTooltip, setInfoTooltip] = React.useState({
-    isOpen: true,
-    succes: Boolean
+    isOpen: false,
+    succes: Boolean,
   }); // попап с уведомленим о успешном(или не очень) входе
-  // const [isInfoTooltipSucces, setInfoTooltipSucces] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(false); // лоудер
   const [selectedCard, setSelectedCard] = React.useState({}); // выбранная карточка
@@ -71,7 +74,7 @@ function App() {
     setEditAvatarPopupOpened(false);
     setSelectedCard({});
     setDeleteCardPopupOpened(false);
-    setInfoTooltip(false)
+    setInfoTooltip(false);
   };
 
   /** обращение к апи. поиск лайка среди массива лайков карточки и его последущая смена на лайк/дизлайк */
@@ -215,9 +218,17 @@ function App() {
               />
               <Route
                 path="/sign-in"
-                element={<Login handleLogin={handleLogin} />}
+                element={
+                  <Login
+                    handleLogin={handleLogin}
+                    setInfoTooltip={setInfoTooltip}
+                  />
+                }
               />
-              <Route path="/sign-up" element={<Register setInfoTooltip={setInfoTooltip} />} />
+              <Route
+                path="/sign-up"
+                element={<Register setInfoTooltip={setInfoTooltip} />}
+              />
               <Route
                 path="/"
                 element={
@@ -227,6 +238,10 @@ function App() {
                     <Navigate to="/sign-in" replace />
                   )
                 }
+              />
+              <Route
+                path="*"
+                element={<NotFound />}
               />
             </Routes>
 

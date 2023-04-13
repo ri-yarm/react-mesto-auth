@@ -23,29 +23,33 @@ const Login = ({ handleLogin, setInfoTooltip }) => {
       //если токен пустой то не делаем никакого запроса
       return;
     }
-    auth.getMyEmail(jwt).then((res) => {
-      handleLogin(res.data);
-      const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
-      navigate(url);
-    })
-    .catch(() => {
-      setInfoTooltip({isOpen: true, succes: false})
-    })
+    auth
+      .getMyEmail(jwt)
+      .then((res) => {
+        handleLogin(res.data);
+        const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+        navigate(url);
+      })
+      .catch(() => {
+        setInfoTooltip({ isOpen: true, succes: false });
+      });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    auth.authorize(values.password, values.email).then((res) => {
-      if (res.token) {
-        localStorage.setItem("token", res.token);
-        const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
-        navigate(url);
-      }
-    })
-    .catch(() => {
-      setInfoTooltip({isOpen: true, succes: false})
-    })
+    auth
+      .authorize(values.password, values.email)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem("token", res.token);
+          const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+          navigate(url);
+        }
+      })
+      .catch(() => {
+        setInfoTooltip({ isOpen: true, succes: false });
+      });
   };
 
   useEffect(() => {

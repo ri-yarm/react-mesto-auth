@@ -172,7 +172,7 @@ function App() {
         setCards(cardResponse);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [LoggedIn]); // что бы загружались данные только при входе и выходе
 
   // для подписки на закрытие попапа через esc
   useEffect(() => {

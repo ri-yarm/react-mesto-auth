@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 
 import falsyLoginImage from "../../images/falseAuth.svg";
 import truthyLoginImage from "../../images/trueAuth.svg";

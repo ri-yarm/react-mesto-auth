@@ -27,7 +27,7 @@ const Login = ({ handleLogin, setInfoTooltip }) => {
       .getMyEmail(jwt)
       .then((res) => {
         handleLogin(res.data);
-        const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+        const url = location.state?.returnUrl || "/"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
         navigate(url);
       })
       .catch(() => {
@@ -43,7 +43,7 @@ const Login = ({ handleLogin, setInfoTooltip }) => {
       .then((res) => {
         if (res.token) {
           localStorage.setItem("token", res.token);
-          const url = location.state?.returnUrl || "/sign-up"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+          const url = location.state?.returnUrl || "/"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
           navigate(url);
         }
       })

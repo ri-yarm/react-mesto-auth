@@ -3,14 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useFormAndValidation } from "../hooks/useFormAndValidation";
 import * as auth from "../utils/Auth";
 
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
-
 const Login = ({
   setInfoTooltip,
   togglePasswordVisibility,
   passwordVisible,
   imageEye,
+  setLoggedIn
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,9 +30,10 @@ const Login = ({
       .authorize(values.password, values.email)
       .then((res) => {
         if (res.token) {
+          setLoggedIn(true)
           localStorage.setItem("token", res.token);
           const url = location.state?.returnUrl || "/"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
-          navigate(url);
+          navigate('/');
         }
       })
       .catch(() => {

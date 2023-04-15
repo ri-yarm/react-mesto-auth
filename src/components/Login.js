@@ -1,9 +1,17 @@
-import { useEffect } from "react";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useFormAndValidation } from "./hooks/useFormAndValidation";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
 import * as auth from "../utils/Auth";
 
-const Login = ({ handleLogin, setInfoTooltip }) => {
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
+
+const Login = ({
+  setInfoTooltip,
+  togglePasswordVisibility,
+  passwordVisible,
+  imageEye,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -16,24 +24,6 @@ const Login = ({ handleLogin, setInfoTooltip }) => {
     setIsValid,
     setErrors,
   } = useFormAndValidation();
-
-  const tokenCheck = () => {
-    const jwt = localStorage.getItem("token");
-    if (!jwt) {
-      //если токен пустой то не делаем никакого запроса
-      return;
-    }
-    auth
-      .getMyEmail(jwt)
-      .then((res) => {
-        handleLogin(res.data);
-        const url = location.state?.returnUrl || "/"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
-        navigate(url);
-      })
-      .catch(() => {
-        setInfoTooltip({ isOpen: true, succes: false });
-      });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,10 +42,6 @@ const Login = ({ handleLogin, setInfoTooltip }) => {
       });
   };
 
-  useEffect(() => {
-    tokenCheck();
-  }, []);
-
   return (
     <main className="content">
       <div className="auth">
@@ -72,16 +58,19 @@ const Login = ({ handleLogin, setInfoTooltip }) => {
             onChange={(e) => handleChange(e)}
           />
           <span className="form__input-error">{errors.email}</span>
-          <input
-            type="password"
-            name="password"
-            placeholder="Пароль"
-            className="form__input background-black"
-            required
-            minLength="5"
-            value={values.password || ""}
-            onChange={(e) => handleChange(e)}
-          />
+          <div className="form__input_container">
+            <input
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              placeholder="Пароль"
+              className="form__input background-black"
+              required
+              minLength="5"
+              value={values.password || ""}
+              onChange={(e) => handleChange(e)}
+            />
+            <span className="auth__eye" onClick={togglePasswordVisibility}>{imageEye}</span>
+          </div>
           <span className="form__input-error">{errors.password}</span>
           <button
             type="submit"

@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import Header from "./Header";
 import Main from "./Main";
@@ -8,6 +14,7 @@ import Login from "./Login";
 import Register from "./Register";
 import NotFound from "./NotFound";
 
+import Popup from "./Popups/Popup";
 import EditProfilePopup from "./Popups/EditProfilePopup";
 import EditAvatarPopup from "./Popups/EditAvatarPopup";
 import AddPlacePopup from "./Popups/AddPlacePopup";
@@ -16,16 +23,15 @@ import ImagePopup from "./Popups/ImagePopup";
 import InfoTooltip from "./Popups/InfoTooltip";
 
 import ProtectedRoute from "./hoc/ProtectedRoute";
+import PasswordEye from "./hoc/PasswordEye";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { CardContext } from "../contexts/CardContext";
 
 import * as api from "../utils/Api";
-
-/* 
-  TODO сделать лоудер при загрузки страницы
-*/
+import * as auth from "../utils/Auth";
 
 function App() {
+  const navigate = useNavigate();
   // стейты состояния попапов(по умолчанию не видно)
   const [isEditProfilePopupOpened, setIsEditProfilePopupOpened] =
     React.useState(false);
@@ -34,10 +40,7 @@ function App() {
     React.useState(false);
   const [isDeleteCardPopupOpened, setDeleteCardPopupOpened] =
     React.useState(false);
-  const [isInfoTooltip, setInfoTooltip] = React.useState({
-    isOpen: false,
-    succes: Boolean,
-  }); // попап с уведомленим о успешном(или не очень) входе
+  const [isInfoTooltip, setInfoTooltip] = React.useState(false); // попап с уведомленим о успешном(или не очень) входе
 
   const [isLoading, setIsLoading] = React.useState(false); // лоудер
   const [selectedCard, setSelectedCard] = React.useState({}); // выбранная карточка
@@ -48,7 +51,7 @@ function App() {
   const [cards, setCards] = React.useState([]); //стейт с массивом карточек
   const location = useLocation();
   const currentPath = location.pathname; // текущий путь в url
-  const [LoggedIn, setLoggedIn] = React.useState(false); //стейт авторизации
+  const [loggedIn, setLoggedIn] = React.useState(false); //стейт авторизации
 
   // Есть ли хоть один открытый попап
   const isOpen =
@@ -56,6 +59,7 @@ function App() {
     isAddPlacePopupOpened ||
     isEditAvatarPopupOpened ||
     isDeleteCardPopupOpened ||
+    isInfoTooltip ||
     selectedCard.link;
 
   /** Эти функции открывают свой попап */
@@ -158,6 +162,32 @@ function App() {
     setRegistredUser(res);
   };
 
+  /** Функция выхода из аккаунта*/
+  const signOut = () => {
+    localStorage.removeItem("token");
+    navigate("sign-in", { replace: true });
+    setLoggedIn(false);
+  };
+
+  /** Проверяем токен  */
+  const checkToken = () => {
+    const jwt = localStorage.getItem("token");
+    if (!jwt) {
+      //если токен пустой то не делаем никакого запроса
+      return;
+    }
+    auth
+      .getMyEmail(jwt)
+      .then((res) => {
+        handleLogin(res.data);
+        const url = location.state?.returnUrl || "/"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+        navigate(url);
+      })
+      .catch(() => {
+        setInfoTooltip({ isOpen: true, succes: false });
+      });
+  };
+
   // для получение данных через api
   useEffect(() => {
     const userPromise = api.getUserInfo();
@@ -172,22 +202,10 @@ function App() {
         setCards(cardResponse);
       })
       .catch((err) => console.log(err));
-  }, [LoggedIn]); // что бы загружались данные только при входе и выходе
 
-  // для подписки на закрытие попапа через esc
-  useEffect(() => {
-    function closeByEscape(evt) {
-      //закрытие попапа esc
-      if (evt.key === "Escape") closeAllPopups();
-    }
-
-    if (isOpen) {
-      document.addEventListener("keydown", closeByEscape);
-      return () => {
-        document.removeEventListener("keydown", closeByEscape);
-      };
-    }
-  }, [isOpen]);
+    //при монтировании приложения
+    checkToken();
+  }, [!!loggedIn]); // что бы загружались данные только при входе
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -197,7 +215,7 @@ function App() {
             <Header
               currentPath={currentPath}
               registredUser={registredUser}
-              setLoggedIn={setLoggedIn}
+              signOut={signOut}
             />
 
             <Routes>
@@ -206,7 +224,7 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={Main}
-                    loggedIn={LoggedIn}
+                    loggedIn={loggedIn}
                     onEditProfile={openEditProfilePopup}
                     onAddPlace={openAddPlacePopup}
                     onEditAvatar={openEditAvatarPopup}
@@ -219,7 +237,8 @@ function App() {
               <Route
                 path="/sign-in"
                 element={
-                  <Login
+                  <PasswordEye
+                    element={Login}
                     handleLogin={handleLogin}
                     setInfoTooltip={setInfoTooltip}
                   />
@@ -227,58 +246,57 @@ function App() {
               />
               <Route
                 path="/sign-up"
-                element={<Register setInfoTooltip={setInfoTooltip} />}
+                element={<PasswordEye
+                    element={Register}
+                    handleLogin={handleLogin}
+                    setInfoTooltip={setInfoTooltip}
+                  />}
               />
               <Route
                 path="/"
                 element={
-                  LoggedIn ? (
+                  loggedIn ? (
                     <Navigate to="/" replace />
                   ) : (
                     <Navigate to="/sign-in" replace />
                   )
                 }
               />
-              <Route
-                path="*"
-                element={<NotFound />}
-              />
+              <Route path="*" element={<NotFound />} />
             </Routes>
 
             <Footer user={currentUser.name} />
 
-            <EditProfilePopup
-              isOpen={isEditProfilePopupOpened}
-              onClose={closeAllPopups}
-              onUpdateUser={handleUpdateUser}
-              isLoading={isLoading}
-            />
+            <Popup isOpen={isOpen} onClose={closeAllPopups}>
+              <EditProfilePopup
+                isOpen={isEditProfilePopupOpened}
+                onUpdateUser={handleUpdateUser}
+                isLoading={isLoading}
+              />
 
-            <EditAvatarPopup
-              isOpen={isEditAvatarPopupOpened}
-              onClose={closeAllPopups}
-              onUpdateAvatar={handleUpdateAvatar}
-              isLoading={isLoading}
-            />
+              <EditAvatarPopup
+                isOpen={isEditAvatarPopupOpened}
+                onUpdateAvatar={handleUpdateAvatar}
+                isLoading={isLoading}
+              />
 
-            <AddPlacePopup
-              isOpen={isAddPlacePopupOpened}
-              onClose={closeAllPopups}
-              onAddPlace={handleAddPlaceSubmit}
-              isLoading={isLoading}
-            />
+              <AddPlacePopup
+                isOpen={isAddPlacePopupOpened}
+                onAddPlace={handleAddPlaceSubmit}
+                isLoading={isLoading}
+              />
 
-            <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+              <ImagePopup card={selectedCard} />
 
-            <DeleteCardPopup
-              card={deletedCard}
-              isOpen={isDeleteCardPopupOpened}
-              onClose={closeAllPopups}
-              onDeleteCard={handleCardDelete}
-              isLoading={isLoading}
-            />
+              <DeleteCardPopup
+                card={deletedCard}
+                isOpen={isDeleteCardPopupOpened}
+                onDeleteCard={handleCardDelete}
+                isLoading={isLoading}
+              />
 
-            <InfoTooltip state={isInfoTooltip} onClose={closeAllPopups} />
+              <InfoTooltip state={isInfoTooltip} />
+            </Popup>
           </div>
         </div>
       </CardContext.Provider>

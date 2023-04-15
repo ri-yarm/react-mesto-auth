@@ -1,6 +1,6 @@
 import {useState, useCallback} from 'react';
 
-//кастомный хук валидации и отображения ошибок(спасибо ревьюеру за годноту)
+//кастомный хук валидации и отображения ошибок
 export function useFormAndValidation() {
   const [ values, setValues ] = useState({});
   const [ errors, setErrors ] = useState({});

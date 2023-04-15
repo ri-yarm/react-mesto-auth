@@ -1,18 +1,10 @@
 import React, { useState } from "react";
 import HamburgerMenu from "./HamburgerMenu";
 import logo from "../images/header__logo.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Header({ currentPath, registredUser, setLoggedIn }) {
+function Header({ currentPath, registredUser, signOut }) {
   const [isOpen, setIsOpen] = useState(false); // для гамбургера
-  const navigate = useNavigate();
-
-  /** Функция выхода */
-  const signOut = () => {
-    localStorage.removeItem("token");
-    navigate("sign-in", { replace: true });
-    setLoggedIn(false);
-  };
 
   /** Функция меняет стейт клика на гамбургер */
   const handleClick = () => {
@@ -34,9 +26,9 @@ function Header({ currentPath, registredUser, setLoggedIn }) {
         )}
         {currentPath === "/" && (
           <li>
-            <Link className="link header__link" to="/sign-in" onClick={signOut}>
+            <button className="link header__link" to="/sign-in" onClick={signOut}>
               Выйти
-            </Link>
+            </button>
           </li>
         )}
       </ul>

@@ -1,8 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useFormAndValidation } from "./hooks/useFormAndValidation";
+import { useFormAndValidation } from "../hooks/useFormAndValidation";
 import * as auth from "../utils/Auth";
 
-const Register = ({setInfoTooltip}) => {
+const Register = ({
+  setInfoTooltip,
+  togglePasswordVisibility,
+  passwordVisible,
+  imageEye,
+}) => {
   const navigate = useNavigate();
   const {
     values,
@@ -29,12 +34,12 @@ const Register = ({setInfoTooltip}) => {
       auth
         .register(values.password, values.email)
         .then(() => {
-          setInfoTooltip({isOpen: true, succes: true})
-          navigate("/sign-in", { replace: true })
+          setInfoTooltip({ isOpen: true, succes: true });
+          navigate("/sign-in", { replace: true });
         })
         .catch(() => {
-          setInfoTooltip({isOpen: true, succes: false})
-        })
+          setInfoTooltip({ isOpen: true, succes: false });
+        });
     }
   };
 
@@ -54,21 +59,25 @@ const Register = ({setInfoTooltip}) => {
             value={values.email || ""}
           />
           <span className="form__input-error">{errors.email}</span>
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Пароль"
-            minLength="5"
-            required
-            className="form__input background-black"
-            onChange={(e) => handleChange(e)}
-            value={values.password || ""}
-          />
+          <div className="form__input_container">
+            <input
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              placeholder="Пароль"
+              minLength="5"
+              required
+              className="form__input background-black"
+              onChange={(e) => handleChange(e)}
+              value={values.password || ""}
+            />
+            <span className="auth__eye" onClick={togglePasswordVisibility}>
+              {imageEye}
+            </span>
+          </div>
           <span className="form__input-error">{errors.password}</span>
 
           <input
-            type="password"
+            type={passwordVisible ? "text" : "password"}
             name="confirmPassword"
             placeholder="Повторите пароль"
             minLength="5"

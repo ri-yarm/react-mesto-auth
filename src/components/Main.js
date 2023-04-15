@@ -1,5 +1,5 @@
 import React from "react";
-import avatar from "../images/profile__avatar.jpg";
+import avatar from "../images/profile__spinner.svg";
 import Card from "./Card";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { CardContext } from "../contexts/CardContext";
@@ -37,12 +37,12 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike
           <img
             className="profile__avatar"
             src={!currentUser.avatar ? avatar : currentUser.avatar}
-            alt=" Ваш аватар."
+            alt=""
           />
         </a>
         <div className="profile__info">
           <div className="profile__nickname">
-            <h1 className="profile__title">{currentUser.name}</h1>
+            <h1 className="profile__title">{currentUser.name }</h1>
             <button
               onClick={() => onEditProfile()}
               type="button"

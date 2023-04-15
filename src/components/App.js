@@ -241,6 +241,7 @@ function App() {
                     element={Login}
                     handleLogin={handleLogin}
                     setInfoTooltip={setInfoTooltip}
+                    setLoggedIn={setLoggedIn}
                   />
                 }
               />

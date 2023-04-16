@@ -190,22 +190,27 @@ function App() {
 
   // для получение данных через api
   useEffect(() => {
-    const userPromise = api.getUserInfo();
-    const cardPromise = api.getDefaultCard();
+    // если выполнен вход, то начнёт загружаться контент
+    if (loggedIn) {
+      const userPromise = api.getUserInfo();
+      const cardPromise = api.getDefaultCard();
 
-    // сналачала обрабатываем промис пользователя, и если всё норм промис карточек
-    Promise.all([userPromise, cardPromise])
-      .then((res) => {
-        const [userResponse, cardResponse] = res;
-        setCurrentUser(userResponse);
+      // сналачала обрабатываем промис пользователя, и если всё норм промис карточек
+      Promise.all([userPromise, cardPromise])
+        .then((res) => {
+          const [userResponse, cardResponse] = res;
+          setCurrentUser(userResponse);
 
-        setCards(cardResponse);
-      })
-      .catch((err) => console.log(err));
+          setCards(cardResponse);
+        })
+        .catch((err) => setInfoTooltip({ isOpen: true, succes: false }));
+    }
+  }, [loggedIn]);
 
-    //при монтировании приложения
+  // проверяем токен при монтировании всего приложения
+  useEffect(() => {
     checkToken();
-  }, [!!loggedIn]); // что бы загружались данные только при входе
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -247,11 +252,13 @@ function App() {
               />
               <Route
                 path="/sign-up"
-                element={<PasswordEye
+                element={
+                  <PasswordEye
                     element={Register}
                     handleLogin={handleLogin}
                     setInfoTooltip={setInfoTooltip}
-                  />}
+                  />
+                }
               />
               <Route
                 path="/"

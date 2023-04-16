@@ -31,12 +31,21 @@ const Popup = ({ isOpen, children, onClose }) => {
   }, [isOpen]);
 
   return (
+    <div
+      className={`popup ${isOpen ? "popup_opened" : ""}`}
+      onClick={overlayClickHandler}
+    >
+      {children}
+    </div>
+  );
+
+  /* return (
     isOpen && (
-      <div className="popup popup_opened" onClick={overlayClickHandler}>
+      <div className={`popup ${isOpen ? 'popup_opened' : ''}`} onClick={overlayClickHandler}>
         {children}
       </div>
     )
-  );
+  ); */ //! сломал попап для плавности открытия
 };
 
 export default Popup;

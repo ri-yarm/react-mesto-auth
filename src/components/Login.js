@@ -8,7 +8,7 @@ const Login = ({
   togglePasswordVisibility,
   passwordVisible,
   imageEye,
-  setLoggedIn
+  handleLogin,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,10 +30,10 @@ const Login = ({
       .authorize(values.password, values.email)
       .then((res) => {
         if (res.token) {
-          setLoggedIn(true)
           localStorage.setItem("token", res.token);
-          const url = location.state?.returnUrl || "/"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
-          navigate('/');
+          // const url = location.state?.returnUrl || "/"; //если мы до этого хотели перейти на другую страницу, то после логина перейдём на неё
+          handleLogin({email: values.email}) //так как токен пришёл значит, авторизация прошла успешно, можно поставить значение емейла из инпута
+          navigate("/")
         }
       })
       .catch(() => {
@@ -68,7 +68,9 @@ const Login = ({
               value={values.password || ""}
               onChange={(e) => handleChange(e)}
             />
-            <span className="auth__eye" onClick={togglePasswordVisibility}>{imageEye}</span>
+            <span className="auth__eye" onClick={togglePasswordVisibility}>
+              {imageEye}
+            </span>
           </div>
           <span className="form__input-error">{errors.password}</span>
           <button

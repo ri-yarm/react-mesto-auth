@@ -15,7 +15,7 @@ const EditProfilePopup = ({ isOpen, onClose, onUpdateUser, isLoading }) => {
 
   useEffect(() => {
     resetForm(currentUser);
-  }, [onClose]);
+  }, [isOpen]);
 
   return (
     isOpen && (

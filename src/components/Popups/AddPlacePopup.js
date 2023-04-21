@@ -13,7 +13,7 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
 
   useEffect(() => {
     resetForm();
-  }, [onClose]); // при закрыти попапа всё сбрасываем
+  }, [isOpen]); // при закрыти попапа всё сбрасываем
 
   return (
     isOpen && (

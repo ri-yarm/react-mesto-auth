@@ -13,7 +13,7 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
 
   useEffect(() => {
     resetForm();
-  }, [onClose]);
+  }, [isOpen]);
 
   return (
     isOpen && (

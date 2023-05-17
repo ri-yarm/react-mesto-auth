@@ -1,8 +1,9 @@
-import { useEffect } from "react";
-import PopupWithForm from "./PopupWithForm";
-import { useFormAndValidation } from "../../hooks/useFormAndValidation";
+import { useEffect, useRef } from 'react';
+import PopupWithForm from './PopupWithForm';
+import { useFormAndValidation } from '../../hooks/useFormAndValidation';
 
 const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
+  const inputRef = useRef();
   const { values, handleChange, errors, isValid, setValues, resetForm } =
     useFormAndValidation();
 
@@ -12,7 +13,16 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
   };
 
   useEffect(() => {
-    resetForm();
+    // ! Здарежка нужна для того чтобы инпут успел отрисовываться
+    const timer = setTimeout(() => {
+      if (isOpen && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 50);
+    return () => {
+      clearTimeout(timer);
+      resetForm();
+    };
   }, [isOpen]);
 
   return (
@@ -20,7 +30,7 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
       <PopupWithForm
         name="avatar"
         title="Обновить аватар"
-        buttonText={isLoading ? "Сохранение" : "Сохранить"}
+        buttonText={isLoading ? 'Сохранение' : 'Сохранить'}
         isOpen={isOpen}
         onClose={onClose}
         onSubmit={handleSubmit}
@@ -29,10 +39,11 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
         <label className="form__label">
           <input
             onChange={handleChange}
-            value={values.avatar || ""}
+            value={values.avatar || ''}
             id="url-input"
             name="avatar"
             type="url"
+            ref={inputRef}
             className="form__input form__input_type_link"
             placeholder="Ссылка на картинку"
             required
